@@ -159,3 +159,81 @@ void tampilkanBarcode(const string& kode) {
     cout << "\n--------------------------------------------------------------------";
     cout << endl;
 }
+stack<string> riwayatPemesanan;
+
+int main() {
+    vector<Pengguna> pengguna;
+    vector<TempatParkir> tempatParkir;
+
+    for (char loc = 'A'; loc <= 'Z'; ++loc) {
+        for (int num = 1; num <= 10; ++num) {
+            tempatParkir.push_back(TempatParkir(loc, num));
+        }
+    }
+
+    Pengguna* penggunaSekarang = nullptr;
+    int pilihan;
+    while (true) {
+        cout << endl;
+        cout << "====================================================================" << endl;
+        cout << "||                        SELAMAT DATANG                          ||" << endl;
+        cout << "||                DI SISTEM PEMESANAN LAHAN PARKIR!               ||" << endl;
+        cout << "====================================================================" << endl;
+        cout << "1. Buat Akun\n2. Login\n3. Lihat Tempat Parkir\n4. Pesan Tempat Parkir\n5. Lihat Riwayat Pemesanan\n6. Keluar\nMasukkan pilihan Anda: ";
+        cin >> pilihan;
+
+        cls(); 
+
+        switch (pilihan) {
+        case 1:
+            penggunaSekarang = &buatAkun(pengguna);
+            break;
+        case 2:
+            penggunaSekarang = login(pengguna);
+            break;
+        case 3:
+            tampilkanTempatParkir(tempatParkir);
+            break;
+        case 4:
+            if (penggunaSekarang) {
+                char lokasi;
+                cout << "Masukkan lokasi (A-Z): ";
+                cin >> lokasi;
+
+                TempatParkir* spot = cariTempatParkir(tempatParkir, lokasi);
+                if (spot) {
+                    spot->pesanTempat();
+                    string konfirmasi = buatKonfirmasi(*spot);
+                    riwayatPemesanan.push(konfirmasi);
+                    cout << "Kode Konfirmasi: " << konfirmasi << ", Tempat: " << spot->getInfoTempat() << endl;
+                    tampilkanBarcode(konfirmasi); 
+                } else {
+                    cout << "Tidak ada tempat yang tersedia di lokasi ini." << endl;
+                }
+            } else {
+                cout << "Silakan login terlebih dahulu." << endl;
+            }
+            break;
+        case 5:
+            if (riwayatPemesanan.empty()) {
+                cout << "Belum ada pemesanan." << endl;
+            } else {
+                cout << "==========================RIWAYAT PEMESANAN=========================\n";
+                stack<string> tempStack = riwayatPemesanan;
+                while (!tempStack.empty()) {
+                    string konfirmasi = tempStack.top();
+                    tempStack.pop();
+                    cout << "Kode Konfirmasi: " << konfirmasi << endl;
+                    tampilkanBarcode(konfirmasi); 
+                }
+            }
+            break;
+        case 6:
+            cout << "Terimakasih Telah Menggunakan Layanan Kami!";
+            exit(0);
+        default:
+            cout << "Pilihan tidak valid." << endl;
+        }
+    }
+    return 0;
+}
