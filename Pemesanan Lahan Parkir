@@ -1,0 +1,79 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <stack>
+#include <cstdlib>
+#include <ctime>
+#include <iomanip>
+#include <chrono>
+#include <thread>
+
+using namespace std;
+
+void cls() {
+#ifdef _WIN32
+    system("cls");
+#else
+    system("clear");
+#endif
+}
+
+void tampilkanLoading() {
+    cout << " ";
+    for (int i = 0; i < 3; ++i) {
+        this_thread::sleep_for(chrono::milliseconds(500));
+        cout << ".";
+    }
+    cout << endl;
+}
+
+class Pengguna {
+private:
+    string username;
+    string password;
+
+public:
+    Pengguna(string uname, string pwd) : username(uname), password(pwd) {}
+
+    string getUsername() const {
+        return username;
+    }
+
+    string getPassword() const {
+        return password;
+    }
+
+    bool validatePassword(string pwd) const {
+        return password == pwd;
+    }
+};
+
+class TempatParkir {
+private:
+    char lokasi;
+    int nomor;
+    bool sudahDipesan;
+
+public:
+    TempatParkir(char loc, int num) : lokasi(loc), nomor(num), sudahDipesan(false) {}
+
+    char getLokasi() const {
+        return lokasi;
+    }
+
+    int getNomor() const {
+        return nomor;
+    }
+
+    bool getStatus() const {
+        return sudahDipesan;
+    }
+
+    void pesanTempat() {
+        sudahDipesan = true;
+    }
+
+    void batalkanTempat() {
+        sudahDipesan = false;
+    }
