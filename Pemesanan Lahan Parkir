@@ -77,3 +77,85 @@ public:
     void batalkanTempat() {
         sudahDipesan = false;
     }
+
+    string getInfoTempat() const {
+        return string(1, lokasi) + to_string(nomor);
+    }
+};
+
+Pengguna& buatAkun(vector<Pengguna>& pengguna) {
+    string username, password;
+    cout << "Masukkan username: ";
+    cin >> username;
+    cout << "Masukkan password: ";
+    cin >> password;
+
+    Pengguna penggunaBaru(username, password);
+    pengguna.push_back(penggunaBaru);
+
+    tampilkanLoading();
+
+    cls();
+    cout << "Akun berhasil dibuat!" << endl;
+    return pengguna.back(); 
+}
+
+Pengguna* login(vector<Pengguna>& pengguna) {
+    string username, password;
+    cout << "Masukkan username: ";
+    cin >> username;
+    cout << "Masukkan password: ";
+    cin >> password;
+
+    for (auto& user : pengguna) {
+        if (user.getUsername() == username && user.validatePassword(password)) {
+            tampilkanLoading();
+
+            cls();
+            cout << "Login berhasil!" << endl;
+            return &user;
+        }
+    }
+    cout << "Username atau password salah." << endl;
+    return nullptr;
+}
+
+void tampilkanTempatParkir(vector<TempatParkir>& tempat) {
+    for (auto& spot : tempat) {
+        cout << "Lokasi: " << spot.getLokasi() << ", Nomor: " << spot.getNomor()
+             << ", Status: " << (spot.getStatus() ? "Dipesan" : "Tersedia") << endl;
+    }
+}
+
+TempatParkir* cariTempatParkir(vector<TempatParkir>& tempat, char lokasi) {
+    for (auto& spot : tempat) {
+        if (spot.getLokasi() == lokasi && !spot.getStatus()) {
+            return &spot;
+        }
+    }
+    return nullptr;
+}
+
+string buatKonfirmasi(TempatParkir& spot) {
+    srand(time(0));
+    string konfirmasi = "PARK" + to_string(rand() % 10000 + 1000);
+    return konfirmasi;
+}
+
+void tampilkanBarcode(const string& kode) {
+    cout << "Barcode: ";
+    for (char c : kode) {
+        if (c >= '0' && c <= '9') {
+            int val = c - '0';
+            cout << "[";
+            for (int i = 0; i < val; ++i) {
+                cout << "#";
+            }
+            cout << "] ";
+        } else if (c == ' ') {
+            cout << "    "; 
+        }
+    }
+    cout << "\n--------------------------------------------------------------------";
+    cout << endl;
+}
